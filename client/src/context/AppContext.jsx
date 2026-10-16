@@ -10,17 +10,30 @@ export const AppContextProvider = (props) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(false);
+  
   const getAuthState = async () => {
-    try {
-      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
-      if (data.success) {
-        setIsLoggedIn(true);
-        getUserData();
-      }
-    } catch (error) {
-      toast.error(error.message);
+  try {
+    const { data } = await axios.get(
+      `${backendUrl}/api/auth/is-auth`,
+      { withCredentials: true }
+    );
+
+    if (data.success) {
+      await getUserData();
+    } else {
+      setIsLoggedIn(false);
+      setUserData(false);
     }
-  };
+  } catch (error) {
+    setIsLoggedIn(false);
+    setUserData(false);
+
+    console.error(
+      "Auth state error:",
+      error.response?.data || error.message
+    );
+  }
+};
 
   const getUserData = async () => {
     try {

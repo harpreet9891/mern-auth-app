@@ -6,13 +6,13 @@ export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
   axios.defaults.withCredentials = true;
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL?.replace(/\/+$/, "");
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(false);
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get(backendUrl + "/api/auth/is-auth");
+      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
       if (data.success) {
         setIsLoggedIn(true);
         getUserData();
@@ -46,7 +46,7 @@ export const AppContextProvider = (props) => {
   };
 
   useEffect(() => {
-   // getUserData();
+    // getUserData();
     getAuthState();
   }, []);
 
